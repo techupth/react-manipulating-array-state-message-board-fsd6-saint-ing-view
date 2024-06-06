@@ -1,4 +1,26 @@
+import { useState } from "react";
+
 function MessageBoard() {
+  const [messageInput, setMessageInput] = useState("");
+  const [messageShow, setMessageShow] = useState([]);
+
+  const handleMessageShow = (event) => {
+    let newMessageShow = [...messageShow];
+    newMessageShow.push(messageInput);
+    setMessageShow(newMessageShow);
+    setMessageInput(" ");
+  };
+  const handleKeyDownMessageShow = (event) => {
+    if (event.key === "Enter") {
+      handleMessageShow();
+    }
+  };
+  const deleteMessageShow = (messageIndex) => {
+    let newMessageShow = [...messageShow];
+    newMessageShow.splice(messageIndex, 1);
+    setMessageShow(newMessageShow);
+  };
+
   return (
     <div className="app-wrapper">
       <h1 class="app-title">Message board</h1>
@@ -9,15 +31,29 @@ function MessageBoard() {
             name="message-text"
             type="text"
             placeholder="Enter message here"
+            onChange={(event) => setMessageInput(event.target.value)}
+            onKeyDown={handleKeyDownMessageShow}
+            value={messageInput}
           />
         </label>
-        <button className="submit-message-button">Submit</button>
+        <button className="submit-message-button" onClick={handleMessageShow}>
+          Submit
+        </button>
       </div>
       <div class="board">
-        <div className="message">
-          <h1>Hello all ! This is first message.</h1>
-          <button className="delete-button">x</button>
-        </div>
+        {messageShow.map((message, index) => (
+          <div className="message">
+            <h1 key={index}>{message}</h1>
+            <button
+              className="delete-button"
+              onClick={() => {
+                deleteMessageShow(index);
+              }}
+            >
+              x
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
